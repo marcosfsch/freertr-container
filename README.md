@@ -55,7 +55,14 @@ There is 2 processes that is run inside this container: <br>
 In addition FreerTr will manipulate the network interface attached to it. <br>
 => This explain why we use --network host flag. In addition
 ```shell
-sudo docker run --detach --privileged --network host -e "FREERTR_INTF_LIST=eth2/20010/20011" -e "FREERTR_HOSTNAME=freertr" -v "/home/kubeadm/freertr/run:/opt/freertr/run" --name freertr-001 freertr/freertr:latest 
+FREERTR_INTF_LIST="0000:19:00.0;0000:19:00.1"
+export IFS=";"
+ARGS=()
+for FREERTR_INTF in $FREERTR_INTF_LIST; do
+  sudo dpdk-devbind.py -b vfio-pci $FREERTR_INTF
+  ARGS+=( --device /dev/vfio/$(readlink -e /sys/bus/pci/devices/$FREERTR_INTF/iommu_group | xargs basename) )
+done
+docker run -it -e "FREERTR_INTF_LIST=$FREERTR_INTF_LIST" -e "FREERTR_HOSTNAME=freertr" -v "`pwd`/run:/opt/freertr/run" --name freertr-001 --device /dev/vfio/vfio "${ARGS[@]}" -v /dev/hugepages:/dev/hugepages --cap-add IPC_LOCK --cap-add NET_ADMIN --cap-add SYS_ADMIN --cap-add SYS_NICE freertr/freertr-dpdk:latest
 ```
 
 ## Acknowledgement
