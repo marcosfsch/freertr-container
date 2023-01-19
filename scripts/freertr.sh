@@ -13,35 +13,22 @@ usage(){
 }
 
 bindintf () {
-    echo "bindintf: FREERTR_INTF_LIST=$FREERTR_INTF_LIST";
-    FREERTR_INTF_LIST=$(echo $1 | tr -d '\"');
+ echo "bindintf: FREERTR_INTF_LIST=$FREERTR_INTF_LIST";
+  FREERTR_INTF_LIST=$(echo $1 | tr -d '\"');
+  ip link add veth0a type veth peer name veth0b
 
-    echo "--- DECLARING FREERTR INTERFACE RAWINT (FORWARDING PLANE) ---";
-    for FREERTR_INTF in $FREERTR_INTF_LIST;
-      do
-        echo "FREERTR_INTF=$FREERTR_INTF";
-        IFS=/;
-        set $FREERTR_INTF;
-        echo "INTF=$1";
-        echo "PORT_1=$2";
-        echo "PORT_2=$3";
-        ip link set $1 up multicast on promisc on mtu 1500
-        ethtool -K $1 rx off
-        ethtool -K $1 tx off
-        ethtool -K $1 sg off
-        ethtool -K $1 tso off
-        ethtool -K $1 ufo off
-        ethtool -K $1 gso off
-        ethtool -K $1 gro off
-        ethtool -K $1 lro off
-        ethtool -K $1 rxvlan off
-        ethtool -K $1 txvlan off
-        ethtool -K $1 ntuple off
-        ethtool -K $1 rxhash off
-        ethtool --set-eee $1 eee off
+  export TOE_OPTIONS="rx tx sg tso ufo gso gro lro rxvlan txvlan rxhash"
 
-        start-stop-daemon -S -b -x "${FREERTR_BASE_DIR}/bin/rawInt.bin" $1 $3 127.0.0.1 $2 127.0.0.1;
-      done
+  for VETH in veth0a veth0b; do
+    ip link set dev $VETH up mtu 10240 promisc on
+    for TOE_OPTION in $TOE_OPTIONS; do
+      /sbin/ethtool --offload $VETH "$TOE_OPTION" off &> /dev/null
+    done
+  done
+
+ DPDK_PORTS=$(dpdk-devbind.py -s 2> /dev/null | sed -n '/Network devices using DPDK-compatible driver/,/Network devices using kernel driver/p' | wc -l)
+ export CPU_PORTS=$(($DPDK_PORTS - 4))
+
 }
 
 start_freertr () {

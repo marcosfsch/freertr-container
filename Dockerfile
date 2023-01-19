@@ -1,9 +1,9 @@
-FROM debian
+FROM debian:bookworm
 MAINTAINER Frederic LOUI <frederic.loui@@renater.fr>
 
 RUN apt-get update
 RUN apt-get -f -y dist-upgrade
-RUN apt-get -f -y install wget unzip net-tools libpcap-dev openssl iproute2 dpdk openvswitch-switch ethtool default-jre-headless
+RUN apt-get -f -y install wget unzip net-tools libpcap-dev openssl iproute2 dpdk openvswitch-switch gettext-base ethtool default-jre-headless
 RUN apt-get clean
 
 RUN mkdir -p /opt/freertr

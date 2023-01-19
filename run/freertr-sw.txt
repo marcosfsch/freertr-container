@@ -1,21 +1,26 @@
-hostname freertr
+hostname dpdk-freerouter
 buggy
 !
-logging buffered debug 10240
-logging file debug zzz.log
 !
 vrf definition v1
  rd 1:1
  exit
 !
-interface ethernet1
- no description
+interface ethernet0
+ description freerouter@P4_CPU_PORT[veth0a]
  no shutdown
  no log-link-change
  exit
 !
-proxy-profile p1
- vrf v1
+interface sdn1
+ description freerouter@P4_CPU_PORT[enp0s3]
+ mtu 1500
+ vrf forwarding v1
+ ipv4 address 192.168.0.131 255.255.255.0
+ ipv6 address 2a01:e0a:159:2850::666 ffff:ffff:ffff:ffff::
+ ipv6 enable
+ no shutdown
+ no log-link-change
  exit
 !
 !
@@ -31,15 +36,19 @@ proxy-profile p1
 !
 !
 !
-server telnet tel
+server telnet telnet
  security protocol telnet
  no exec authorization
  no login authentication
  vrf v1
  exit
 !
-client proxy p1
-client name-server 8.8.8.8
-client time-zone CET
+server p4lang p4
+ export-vrf v1 1
+ export-port sdn1 0 0
+ interconnect ethernet0
+ vrf v1
+ exit
+!
 !
 end
