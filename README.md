@@ -11,7 +11,7 @@ sudo docker run busybox nslookup www.google.com
    
 ## How to build freerTr container
 ```shell
-git clone https://github.com/frederic-loui/freertr-docker.git
+git clone https://github.com/marcosfsch/freertr-container.git
 cd ./freertr-docker
 sudo docker build --tag freertr/freertr:latest .
 ```
