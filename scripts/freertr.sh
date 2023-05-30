@@ -27,7 +27,7 @@ bindintf () {
   done
 
  DPDK_PORTS=$(dpdk-devbind.py -s 2> /dev/null | sed -n '/Network devices using DPDK-compatible driver/,/Network devices using kernel driver/p' | wc -l)
- export CPU_PORTS=$(($DPDK_PORTS - 4))
+ #export CPU_PORTS=$(($DPDK_PORTS - 4))
 
 }
 
