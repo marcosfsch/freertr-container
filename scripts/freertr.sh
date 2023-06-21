@@ -26,9 +26,12 @@ bindintf () {
     done
   done
 
- DPDK_PORTS=$(dpdk-devbind.py -s 2> /dev/null | sed -n '/Network devices using DPDK-compatible driver/,/Network devices using kernel driver/p' | wc -l)
- #export CPU_PORTS=$(($DPDK_PORTS - 4))
-
+ export ARGS=""
+ for FREERTR_INTF in $FREERTR_INTF_LIST; do
+  ARGS="$ARGS -a $FREERTR_INTF"
+ done
+ export CPU_PORT=$(echo $FREERTR_INTF_LIST | wc -l)
+ envsubst < ${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.template > ${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.txt
 }
 
 start_freertr () {
