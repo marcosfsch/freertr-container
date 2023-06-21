@@ -1,0 +1,12 @@
+hwid hp
+! cpu_port
+int eth0 eth - 127.0.0.1 20001 127.0.0.1 20002
+! freerouter control port for message
+tcp2vrf 9080 v1 9080
+! freerouter cli
+tcp2vrf 2323 v1 23
+! launch a process called "veth0" that actually link to veth0b
+! cmd: ip link add veth0a type veth peer name veth0b
+
+proc veth0 /opt/freertr/bin/pcapInt.bin veth0a 20002 127.0.0.1 20001 127.0.0.1
+proc p4emu /opt/freertr/bin/p4dpdk.bin --vdev=net_af_packet0,iface=veth0b,qdisc_bypass=0 ${ARGS} 127.0.0.1 9080 ${CPU_PORTS}
