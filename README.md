@@ -44,7 +44,7 @@ docker run -it -e "FREERTR_INTF_LIST=$FREERTR_INTF_LIST" -e "FREERTR_HOSTNAME=fr
 ```
 
 ## Preparing your NIC for DPDK
-If you are using a Mellanox/Nvidia NIC follow the steps in: https://doc.dpdk.org/guides/platform/mlx5.html
+If you are using a Mellanox/Nvidia NIC follow the steps in: https://doc.dpdk.org/guides/platform/mlx5.html <br>
 For other NICs use: https://doc.dpdk.org/guides/linux_gsg/linux_drivers.html
 
 ## Acknowledgement
