@@ -30,7 +30,7 @@ bindintf () {
  for FREERTR_INTF in $FREERTR_INTF_LIST; do
   ARGS="$ARGS -a $FREERTR_INTF"
  done
- export CPU_PORT=$(echo $FREERTR_INTF_LIST | wc -l)
+ export CPU_PORT=$(echo $FREERTR_INTF_LIST | wc -w)
  envsubst < ${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.template > ${FREERTR_BASE_DIR}/run/${FREERTR_HOSTNAME}-hw.txt
 }
 
