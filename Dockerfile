@@ -21,7 +21,7 @@ RUN mv ./rtr.jar ./bin
 RUN mv ./rtr.ver ./bin
 RUN unzip ./rtr.zip -d /opt/freertr/src
 WORKDIR /opt/freertr/bin
-RUN tar xvfz ../rtr-`uname -m`.tar
+RUN tar xvfz ../rtr-`uname -m`.tgz
 
 COPY . /opt/freertr/
 
